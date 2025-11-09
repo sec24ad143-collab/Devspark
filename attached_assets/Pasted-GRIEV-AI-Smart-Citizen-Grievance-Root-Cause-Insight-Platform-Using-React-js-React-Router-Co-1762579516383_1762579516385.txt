@@ -1,0 +1,195 @@
+GRIEV-AI: Smart Citizen Grievance & Root-Cause Insight Platform
+(Using: React.js + React Router + Context/Redux + Node.js + Express + MongoDB + JWT + bcrypt + Tailwind/MUI)
+
+🧭 1️⃣ Problem Overview
+Government grievance portals exist, but they are slow, manual, and reactive.
+Citizens submit complaints, but:
+
+Urgent ones get buried under less important ones.
+
+There’s no AI-based insight into recurring civic problems.
+
+People can’t easily track complaint progress or patterns in their area.
+
+💡 2️⃣ Objective
+To create a 100% software-based, AI-ready grievance system that:
+
+Makes complaint filing & tracking effortless for citizens.
+
+Automatically classifies issues & assigns them to departments.
+
+Generates data-driven insights for government to act faster.
+
+🧠 3️⃣ System Workflow (Step-by-Step Flow)
+A. User (Citizen) Side Workflow
+1️⃣ Registration / Login
+
+Citizen signs up using name, email, and password.
+
+Password is hashed using bcrypt.
+
+JWT token is generated upon login for secure session handling.
+
+2️⃣ Dashboard
+
+After login, user lands on their personal dashboard.
+
+Can view all complaints filed, their status, and feedback history.
+
+3️⃣ Create a New Grievance
+
+Citizen clicks “Report Issue”, fills form:
+
+Title, Description, Category (water, power, sanitation), Location.
+
+Optionally attaches photo (Cloudinary API later).
+
+Form validation done via React + Formik.
+
+Complaint is submitted via POST API → saved in MongoDB.
+
+4️⃣ AI-Based Categorization (Rule-Based for MVP)
+
+Backend auto-tags complaint category based on keywords:
+
+“Leak”, “Water” → Water Department
+
+“Pothole”, “Road” → PWD
+
+“Garbage”, “Smell” → Sanitation
+
+Status = “Pending” initially.
+
+5️⃣ Complaint Tracking
+
+Citizen sees real-time status updates:
+
+⏳ Pending → ⚙ In Progress → ✅ Resolved
+
+Can add feedback or close complaint.
+
+B. Admin (Government) Side Workflow
+1️⃣ Admin Login
+
+Admin logs in using separate credentials (role: “admin”).
+
+2️⃣ View Dashboard
+
+Can view:
+
+All complaints (sorted by urgency, department, or area).
+
+Filter: Category | Status | Date | Location.
+
+3️⃣ Update Status
+
+Admin opens a complaint → updates status:
+
+Pending → In Progress → Resolved.
+
+Adds notes like “Forwarded to Water Dept.”
+
+4️⃣ Analytics & Insights
+
+Admin dashboard uses Material UI tables + Chart.js to show:
+
+Top complaint categories (pie chart).
+
+Area-wise issue density (bar graph).
+
+Time to resolve (line chart).
+
+Root cause patterns (later AI phase): e.g., “Drainage issues spike during monsoon.”
+
+C. Backend Workflow (Node.js + Express + MongoDB)
+1️⃣ Auth Flow
+
+bcrypt hashes password before storing.
+
+JWT is issued on login → attached to all API calls in headers.
+
+Middleware verifies token for protected routes.
+
+2️⃣ CRUD API Layer
+
+Operation	Route	Access
+Create Grievance	POST /api/grievances	Citizen
+Get All	GET /api/grievances	Admin
+Get User Complaints	GET /api/grievances/user/:id	Citizen
+Update Status	PATCH /api/grievances/:id	Admin
+Delete	DELETE /api/grievances/:id	Admin
+
+3️⃣ MongoDB Schema
+
+js
+Copy code
+User {
+  name, email, password, role: 'citizen' | 'admin', createdAt
+}
+
+Grievance {
+  userId, title, description, category, location,
+  status: 'Pending' | 'In Progress' | 'Resolved',
+  createdAt, updatedAt
+}
+D. Frontend Workflow (React + Tailwind + Context/Redux)
+1️⃣ Routing (React Router)
+
+Route	Component	Description
+/login	<Login />	JWT-based login
+/register	<Register />	Signup form
+/dashboard	<Dashboard />	Citizen view of complaints
+/grievances/new	<GrievanceForm />	Submit new issue
+/admin	<AdminPanel />	Admin dashboard
+
+2️⃣ Context/Redux State
+
+Global store manages:
+
+user (auth info)
+
+grievances (list of complaints)
+
+token (JWT)
+
+3️⃣ UI Components
+
+Navbar → role-based menu
+
+ComplaintCard → status + category
+
+AnalyticsChart → admin graphs
+
+Modal → update status
+
+🧩 4️⃣ Complete Workflow Diagram
+css
+Copy code
+Citizen → [React UI Form] 
+        → [POST /grievances API] 
+        → [Express Server validates JWT + saves to MongoDB]
+        → [Admin Dashboard fetches complaints]
+        → [Admin updates status → PUT /grievances/:id]
+        → [Citizen dashboard updates automatically]
+📊 5️⃣ Example User Journey
+Step	User Action	System Response
+1	User logs in	JWT generated
+2	Files complaint “Water leak near main road”	Saved + auto-tagged “Water Dept.”
+3	Admin views dashboard	Sees high-priority issue (keyword: leak)
+4	Admin updates → “In Progress”	Citizen notified
+5	Admin resolves → “Fixed pipeline”	Citizen sees “Resolved”
+6	System logs duration + generates insight	“Water issues increased in Ward 4”
+
+🧠 6️⃣ Future Roadmap (2-Year Vision)
+Phase	Goal	Tech Addition
+MVP (3 Months)	Web portal with CRUD + JWT	React + Node + MongoDB
+Phase 2	Add AI classification & insights	Flask microservice
+Phase 3	Real-time notifications	Socket.io
+Phase 4	Mobile app (React Native)	REST API reuse
+Phase 5	Multi-language + Gov API integration	i18n + CPGRAMS API
+
+🌟 7️⃣ Outcome
+✅ Helps citizens get faster, transparent grievance resolution.
+✅ Helps government detect recurring issues through data.
+✅ Uses only software — lightweight, scalable, and AI-ready.
+✅ Startup potential as GovTech SaaS or civic engagement platform.
